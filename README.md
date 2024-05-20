@@ -6,13 +6,13 @@
  `Goap Planner` is a project made on Unity 3D, focused on implementing a Goap planner for artificial intelligence. <br>
  Thanks to this planner, AIs can plan a sequence of actions to achieve a goal <br>
  This project has been made by **ERBISTI Matéo**, a programming student at Isart Digital Paris. <br>
- It started on `January 2nd` and finished on `January 15th`. <br>
+ It started on **January 2nd, 2024** and finished on **January 15th, 2024**. <br>
 
 ## Description
 
 ### GOAP Planner:
 
-The first thing I did in this project was to implement the planner part. <br> The GraphBuilder script has every function useful to create the plan depending on the goal and action pool. <br> It uses forward research, and then later in the project, I also implemented the backward research. <br>
+The first thing I did in this project was to implement the planner part. <br> The GraphBuilder script has every function useful to create the plan depending on the goal and action pool. <br> It uses forward research, and then later in the project, I also implemented backward research. <br>
 I also have a GOAPPlanner script which is a component and this is where we can put all of our Actions and Goals scriptable objects and it is the script that will call functions from the GraphBuilder. <br> You can also tick some debug variables to print all of the leaves, the plan generated, and the time it took to create the plan in the console. <br> <br> 
 I made the first exercise with the planner and printed in the editor the leaves, plan, and the time it took to generate the plan. <br> This part didn't need any execution of the plan so it was not the hardest part to make. <br>
 I decided to make all of my actions, goals, and world states scriptable objects to make the Planner more editable in Unity. <br>
@@ -52,7 +52,7 @@ To select the best goal, I used a Get Priority function that you can override. <
 *The Goal scriptable object*. <br>
 
 ### Backward research
-The last thing I implemented was backward research. <br> I didn't find a lot of documentation to make this part so I tried to do it in my own way. <br> It's certainly not the best way to do it as it is longer than doing a forward research but I tried to make it work. <br> 
+The last thing I implemented was backward research. <br> I didn't find a lot of documentation to make this part so I tried to do it in my own way. <br> It's certainly not the best way to do it as it is longer than doing forward research but I tried to make it work. <br> 
 One thing that doesn't work with my method is pre-conditional costs. <br> For the first exercise the pre-conditional cost for Killing the Enemy without a weapon won't work. <br>
 You can activate the backward research by ticking the `Do Backward Research` value in the GOAPPlanner component
 
