@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9206f16bf0d16a408989d561c7a54f5, type: 3}
+  m_Name: G_FillChest
+  m_EditorClassIdentifier: 
+  goalWorldStateSO: {fileID: 11400000, guid: 7aad63c9c2a2a834894b849f7ad05019, type: 2}
+  effectsPostGoal:
+  - name: 3
+    value: 0
