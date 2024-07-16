@@ -12,6 +12,8 @@ GameObject:
   - component: {fileID: 4022837182275941081}
   - component: {fileID: 3363503277490691386}
   - component: {fileID: 7896091363510665292}
+  - component: {fileID: 4747098014224180972}
+  - component: {fileID: 8051283966544307250}
   m_Layer: 0
   m_Name: Agent
   m_TagString: Untagged
@@ -70,10 +72,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da28432f30d500e42ba12126f57243a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentGoal: {fileID: 0}
-  currentAction: {fileID: 0}
-  goalText: {fileID: 0}
-  actionText: {fileID: 0}
 --- !u!114 &7896091363510665292
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -91,6 +89,42 @@ MonoBehaviour:
   iron: {fileID: 711991005849853079}
   ironEmpty: {fileID: 21300000, guid: c6390a983401c7242983ab4bf0b35b4a, type: 3}
   ironFull: {fileID: 21300000, guid: 8601efe11dd0c58439e20ceb8d930c68, type: 3}
+--- !u!114 &4747098014224180972
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1219205734849810920}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af5996abd0abdab4795f2deb32d35020, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &8051283966544307250
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1219205734849810920}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68aa261a66be66d46b7b87556caa8b83, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bShowDebugLeaves: 0
+  bShowDebugPlan: 1
+  bShowDebugTimerCreatePlan: 1
+  startingWorldState: {fileID: 11400000, guid: 986a3a4df19afeb48975a969472bd16e, type: 2}
+  actionsPool:
+  - {fileID: 11400000, guid: 1f1edc0fcf2ac704e9e35395574434fd, type: 2}
+  - {fileID: 11400000, guid: 1d5ff1b8725ace049a497f6fa13efcc5, type: 2}
+  - {fileID: 11400000, guid: 94b37a7eb8265b34391901c2b86786bd, type: 2}
+  - {fileID: 11400000, guid: 49c17e5d72b22cc45a63631b410aa361, type: 2}
+  goalPool:
+  - {fileID: 11400000, guid: ab06175e6e3256246b7d8b9f4d017ad2, type: 2}
+  - {fileID: 11400000, guid: f38a36ca677fa4949a1f1be7bfa3190e, type: 2}
 --- !u!1 &3249096559315169236
 GameObject:
   m_ObjectHideFlags: 0

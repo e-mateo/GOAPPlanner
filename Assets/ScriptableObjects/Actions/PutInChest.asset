@@ -9,15 +9,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 0
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3786f3f8f2be818489cbff9bd7ef2a2c, type: 3}
-  m_Name: GetIron
+  m_Script: {fileID: 11500000, guid: 85347045d5e7ace4a9a80312f6de2e54, type: 3}
+  m_Name: PutInChest
   m_EditorClassIdentifier: 
-  actionName: GetIron
+  actionName: PutInChest
   baseCost: 2
   conditionnalCosts: []
   preconditions:
-  - name: 1
+  - state: 1
+    value: 1
+  - state: 3
     value: 0
   effects:
-  - name: 1
+  - state: 1
+    value: 0
+  - state: 3
     value: 1

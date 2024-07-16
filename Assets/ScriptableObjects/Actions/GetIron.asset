@@ -9,21 +9,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 0
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ac37f01b8178f1e4c93c73df102d244a, type: 3}
-  m_Name: MoveToEnemy
+  m_Script: {fileID: 11500000, guid: 3786f3f8f2be818489cbff9bd7ef2a2c, type: 3}
+  m_Name: GetIron
   m_EditorClassIdentifier: 
-  actionName: MoveToEnemy
+  actionName: GetIron
   baseCost: 2
   conditionnalCosts: []
   preconditions:
-  - name: 8
-    value: 0
-  - name: 9
-    value: 0
-  - name: 5
+  - state: 1
     value: 0
   effects:
-  - name: 8
+  - state: 1
     value: 1
-  - name: 7
-    value: 0

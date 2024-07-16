@@ -7,11 +7,11 @@ public class A_PickUpOre : Action
     {
         if (!IsRunning) //During Planning
         {
-            if (World.Instance.OreChunks.Count <= 0)
+            if (World.Instance.OreChunks.Count <= 0) //Check if there are still avaialble ore chucks
                 return false;
 
             OreChunk chunk = World.Instance.OreChunks[Random.Range(0, World.Instance.OreChunks.Count)];
-            if (chunk.HasOreAvailable())
+            if (chunk.HasOreAvailable()) //Check if the selected ore chuck still has ore
             {
                 Target = chunk.gameObject;
                 return true;
@@ -31,17 +31,17 @@ public class A_PickUpOre : Action
     {
         base.StartAction();
         OreChunk ore = Target.GetComponent<OreChunk>();
-        if(ore)
+        if (!ore) return;
+
+
+        int oreToTake = agent.inventory.maxOre - agent.inventory.currentOre;
+        if (ore.ReserveOre(oreToTake)) //Reserve the ore for this AI
         {
-            int oreToTake = agent.inventory.maxOre - agent.inventory.currentOre;
-            if (ore.ReserveOre(oreToTake))
-            {
-                agent.inventory.oreReserved = oreToTake;
-            }
-            else if (ore.ReserveOre(oreToTake - 1))
-            {
-                agent.inventory.oreReserved = oreToTake - 1;
-            }
+            agent.inventory.oreReserved = oreToTake;
+        }
+        else if (ore.ReserveOre(oreToTake - 1))
+        {
+            agent.inventory.oreReserved = oreToTake - 1;
         }
     }
 

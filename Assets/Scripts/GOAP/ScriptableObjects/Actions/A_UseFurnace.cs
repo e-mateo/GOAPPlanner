@@ -8,7 +8,8 @@ public class A_UseFurnace : Action
     {
         if (!IsRunning) //During Planning
         {
-            if (World.Instance.GetAvailableFurnaces(2).Count > 0)
+            int oreNeededToUseFurnace = 2;
+            if (World.Instance.GetAvailableFurnaces(oreNeededToUseFurnace).Count > 0) //Check if there are avaiable furnance
             {
                 return true;
             }

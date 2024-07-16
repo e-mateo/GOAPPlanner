@@ -17,28 +17,15 @@ public class InventaryUI : MonoBehaviour
         iron.gameObject.SetActive(false);
     }
 
-    public void ActivateIronUI(bool activate)
+    public void ActivateIronUI(bool active)
     {
-        iron.gameObject.SetActive(activate);
+        iron.gameObject.SetActive(active);
     }
 
     public void UpdateOreUI(int currentOre)
     {
-        if(currentOre == 2)
-        {
-            ore1.sprite = ironFull;
-            ore2.sprite = ironFull;
-        }
-        else if(currentOre == 1) 
-        {
-            ore1.sprite = ironFull;
-            ore2.sprite = ironEmpty;
-        }
-        else
-        {
-            ore1.sprite = ironEmpty;
-            ore2.sprite = ironEmpty;
-        }
+        ore1.sprite = currentOre >= 1 ? ironFull : ironEmpty;
+        ore2.sprite = currentOre >= 2 ? ironFull : ironEmpty;
     }
 
 }

@@ -1,9 +1,9 @@
 public class Node
 {
-    int cost;
-    Node parent;
-    Action action;
-    WorldState state;
+    int cost; //cost of the node (takes into account the cost of every parent's node)
+    Node parent; //ref to the parent node
+    Action action; //ref to the action associated to this node
+    WorldState state;  //ref of the worldstate during this action used to simulate an agent world state during plannification
 
     public int Cost {  get { return cost; } }
     public Action Action { get { return action; } }
@@ -19,7 +19,7 @@ public class Node
 
         if(parent != null && action != null)
         {
-            this.cost = parent.cost + action.GetCost(parent.state);
+            this.cost = parent.cost + action.GetActionCost(parent.state);
         }
         else
         {

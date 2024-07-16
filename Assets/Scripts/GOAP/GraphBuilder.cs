@@ -3,107 +3,77 @@ using UnityEngine;
 
 public class GraphBuilder
 {
-    public void BuildGraph(Node parent, List<Node> leaves, List<Action> availableActions, WorldState goal)
+    //Used to create every possible plans in a tree graph
+    public void BuildGraph(Node parent, List<Node> outLeaves, List<Action> availableActions, WorldState goal)
     {
-        foreach(Action action in availableActions)
+        foreach(Action action in availableActions) //Loop through each available Action
         {
-            if(action.IsValid(parent.State))
+            if(action.IsValid(parent.State)) //Check action preconditions
             {
                 WorldState newWorldState = action.ApplyEffect(parent.State);
-                Node node = new Node(parent, newWorldState, action);
-                if (GoalAchieved(newWorldState, goal))
+                Node nextNode = new Node(parent, newWorldState, action); //Create the next Node of the branch
+                if (IsGoalAchieved(newWorldState, goal)) //check if the action completes the goal
                 {
-                    leaves.Add(node);
+                    outLeaves.Add(nextNode); //Add the node to the leaves (leaves are the final nodes that validates the goal)
                 }
                 else
                 {
-                    List<Action> actionsSubSet = CreateActionSubSet(availableActions, action);
-                    BuildGraph(node, leaves, actionsSubSet, goal);
+                    List<Action> actionsSubSet = CreateActionSubSet(availableActions, action); //Remove the action from the available action
+                    BuildGraph(nextNode, outLeaves, actionsSubSet, goal); //Recursive function to select the next action until the goal is completed or that no more action are available
                 }
             }
         }
     }
 
-    public void BuildGraphBackward(Node parent, List<Node> leaves, List<Action> availableActions, WorldState start)
-    {
-        foreach (Action action in availableActions)
-        {
-            if (action.BackwardValidateEffect(parent.State))
-            {
-                WorldState BeforeAction = action.BackwardValidateAndApplyCondition(parent.State);
-
-                if (BeforeAction)
-                {
-                    if (parent.Parent == null)
-                    {
-                        if (GoalAchieved(BeforeAction, parent.State)) //Can't be the first action because the world state before the action still validates the goal
-                            continue;
-                    }
-
-                    Node node = new Node(parent, BeforeAction, action);
-                    if (StartAchieved(BeforeAction, start))
-                    {
-                        leaves.Add(node);
-                    }
-                    else
-                    {
-                        List<Action> actionsSubSet = CreateActionSubSet(availableActions, action);
-                        BuildGraphBackward(node, leaves, actionsSubSet, start);
-                    }
-                }
-            }
-        }
-    }
-
-
-    public Queue<Node> CreatePlan(List<Node> leaves, bool backward)
+    //Create the final plan
+    public Queue<Node> CreatePlan(List<Node> leaves /*leaves are the final nodes that validates the goal*/)
     {
         //Choose lowest plan
         if (leaves == null || leaves.Count == 0)
             return null;
 
-        Node lowestCostLeave = null;
-        foreach (Node node in leaves)
-        {
-            if(lowestCostLeave == null)
-            {
-                lowestCostLeave = node;
-            }
-            else if(node.Cost < lowestCostLeave.Cost)
-            {
-                lowestCostLeave = node;
-            }
-        }
+        Node cheapestLeave = GetCheapestLeaves(leaves);
 
         //Create the plan
         List<Node> plan = new List<Node>();
-        Node currentNode = lowestCostLeave;
-        while (currentNode.Parent != null)
+        Node currentNode = cheapestLeave;
+        while (currentNode.Parent != null) //Go back from the leave node to the root node to create the plan
         {
             plan.Add(currentNode);
             currentNode = currentNode.Parent;
         }
-        if(!backward)
-            plan.Reverse();
+        plan.Reverse(); //Reverse the plan to start from the root to the leave
 
-        Queue<Node> planQueue = new Queue<Node>();
+        Queue<Node> planQueue = new Queue<Node>(); //Copy the plan into a queue
         foreach (Node node in plan)
             planQueue.Enqueue(node);
 
         return planQueue;
     }
-    private bool GoalAchieved(WorldState newState, WorldState goal)
-    {
-        if (!goal)
-            return false;
 
-        foreach(KeyValuePair<StateType, bool> state in goal.D_WorldState)
+    Node GetCheapestLeaves(List<Node> leaves)
+    {
+        Node cheapestLeave = null;
+        foreach (Node leave in leaves)
         {
-            bool value;
-            if (newState.D_WorldState.TryGetValue(state.Key, out value))
+            if (cheapestLeave == null || leave.Cost < cheapestLeave.Cost)
             {
-                if (value == state.Value)
-                    continue;
+                cheapestLeave = leave;
+            }
+        }
+        return cheapestLeave;
+    }
+
+    bool IsGoalAchieved(WorldState worldState, WorldState goal)
+    {
+        if (!goal) return false;
+
+        foreach(KeyValuePair<StateType, bool> goalState in goal.D_WorldState) //Check if the goal worldstate condition matches the current worldstate
+        {
+            bool stateValue;
+            if (worldState.TryGetValue(goalState.Key, out stateValue) && stateValue == goalState.Value) //Check if the value of the state is the same in the worldState and the goalState
+            {
+                continue;
             }
 
             return false;
@@ -112,27 +82,10 @@ public class GraphBuilder
         return true;
     }
 
-    private bool StartAchieved(WorldState currentWorldState, WorldState startingWorldState)
-    {
-        foreach (KeyValuePair<StateType, bool> state in startingWorldState.D_WorldState)
-        {
-            bool value;
-            if (currentWorldState.D_WorldState.TryGetValue(state.Key, out value))
-            {
-                if (value != state.Value)
-                    return false;
-            }
-        }
-
-        return true;
-    }
-
-    private List<Action> CreateActionSubSet(List<Action> availableActions, Action action)
+    List<Action> CreateActionSubSet(List<Action> availableActions, Action action)
     {
         List<Action> subsetAction = new List<Action>(availableActions);
         subsetAction.Remove(action);
         return subsetAction;
     }
-
-
 }

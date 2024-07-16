@@ -1,9 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class GoapExecutor : MonoBehaviour
+public class GoapExecutor : MonoBehaviour //Component used to execute the Goap Planner in real time
 {
     GOAPPlanner goapPlanner;
     Queue<Node> currentPlan;
@@ -11,8 +12,6 @@ public class GoapExecutor : MonoBehaviour
     Action currentAction;
     Agent agent;
 
-    [SerializeField] TMP_Text goalText;
-    [SerializeField] TMP_Text actionText;
 
     private void Start()
     {
@@ -22,49 +21,67 @@ public class GoapExecutor : MonoBehaviour
 
     private void Update()
     {
-        CheckForNewGoal();
-        if (!currentAction)
-            return;
+        SelectGoal(); //Select the current goal
+        DoCurrentAction();
+    }
 
-        if(!currentAction.IsRunning)
+    private void SelectGoal()
+    {
+        Goal bestGoal = goapPlanner.GetBestGoal();
+
+        if (bestGoal != currentGoal || !currentAction)
         {
-            currentAction.StartAction();
+            SwitchGoal(bestGoal);
         }
-        else
-        {
-            if (!currentAction.IsValid(agent.GetWorldState()))
-            {
-                currentAction.Abort();
-                ComputeNewPlan();
-                return;
-            }
+    }
 
-            bool completed = currentAction.ExecuteAction();
-            if (completed)
-            {
-                CompleteAction();
-            }
+    void SwitchGoal(Goal newGoal)
+    {
+        //If the goal changes, make a new plan
+        currentGoal = newGoal;
+        ComputeNewPlan();
+    }
+
+    void DoCurrentAction()
+    {
+        if (!currentAction) return;
+
+        if (!currentAction.IsValid(agent.GetWorldState())) //Check if the precondition and procedural precondition are still valid
+        {
+            ComputeNewPlan();
+            return;
+        }
+
+        bool completed = currentAction.ExecuteAction();
+        if (completed)
+        {
+            CompleteAction();
         }
     }
 
     private void CompleteAction()
     {
-        agent.SetWorldState(currentAction.ApplyEffect(agent.GetWorldState()));
-        currentAction.EndAction();
+        WorldState WorldStatePostAction = currentAction.ApplyEffect(agent.GetWorldState()); //Apply the effects of the action on the agent world state
+        agent.SetWorldState(WorldStatePostAction);
 
+        currentAction.EndAction();
         currentAction = GetNextAction();
-        if (currentAction == null) //Has Reached the end of the goal
+        currentAction?.StartAction();
+
+        if (currentAction == null) //Has Reached the end of the plan: the goal is completed
         {
             currentGoal.PostValidateGoal(agent.GetWorldState());
-            CheckForNewGoal();
+            SelectGoal(); //Select a new goal
         }
     }
 
     private void ComputeNewPlan()
     {
+        currentAction?.Abort();
         Node startingNode = new Node(null, agent.GetWorldState(), null);
         currentPlan = goapPlanner.ComputePlan(startingNode, currentGoal);
         currentAction = GetNextAction();
+        currentAction?.StartAction();
     }
 
     private Action GetNextAction()
@@ -72,24 +89,9 @@ public class GoapExecutor : MonoBehaviour
         if (currentPlan != null && currentPlan.Count > 0)
         {
             Action action = currentPlan.Dequeue().Action;
-            actionText.SetText(action.ActionName);
             return action;
         }
 
         return null;
-    }
-
-    private void CheckForNewGoal()
-    {
-        //Switch goal
-        Goal BestGoal = goapPlanner.GetBestGoal();
-        if (BestGoal != currentGoal || !currentAction)
-        {
-            currentGoal = BestGoal;
-            goalText.SetText(currentGoal.name);
-            if (currentAction)
-                currentAction.Abort();
-            ComputeNewPlan();
-        }
     }
 }

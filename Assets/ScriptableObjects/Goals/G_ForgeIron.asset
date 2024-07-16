@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   goalWorldStateSO: {fileID: 11400000, guid: be8bb479eed5ac34eb862afe9a1edf40, type: 2}
   effectsPostGoal:
-  - name: 2
+  - state: 2
     value: 0

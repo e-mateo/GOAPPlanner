@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class FaceCamera : MonoBehaviour
+public class FaceCamera : MonoBehaviour //Component used to make a canva faces the camera
 {
     Canvas canva;
     Camera cam;

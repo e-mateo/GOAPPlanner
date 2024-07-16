@@ -5,7 +5,7 @@ using System.Numerics;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
-public class GOAPPlanner : MonoBehaviour
+public class GOAPPlanner : MonoBehaviour //Component used to create a plan
 {
     [Header("Debugs")]
     [SerializeField] bool bShowDebugLeaves;
@@ -13,50 +13,39 @@ public class GOAPPlanner : MonoBehaviour
     [SerializeField] bool bShowDebugTimerCreatePlan;
 
     [Header("Planner")]
-    public bool bDoBackwardResearch;
     [SerializeField] public WorldState startingWorldState;
-    [SerializeField] List<Action> ActionsPool;
-    [SerializeField] List<Goal> GoalPool;
+    [SerializeField] List<Action> actionsPool; //All possible actions that the agent can make
+    [SerializeField] List<Goal> goalPool; //All possible actions that the agent can reach
 
-    GraphBuilder graphBuilder = new GraphBuilder();
     Agent agent;
-    Stopwatch stopwatch = new Stopwatch();
+    GraphBuilder graphBuilder = new GraphBuilder();
 
     private void Start()
     {
         UnityEngine.Random.InitState((int)DateTime.Now.Ticks);
+
         //instantiate Scriptable Object (used to trigger Awake and be able to edit them in play time without editing the asset)
         startingWorldState = Instantiate<WorldState>(startingWorldState);
 
         agent = GetComponent<Agent>();
-        for (int i = 0; i < ActionsPool.Count; i++)
+        for (int i = 0; i < actionsPool.Count; i++)
         {
-            ActionsPool[i] = Instantiate<Action>(ActionsPool[i]);
-            ActionsPool[i].SetAgent(agent);
+            actionsPool[i] = Instantiate<Action>(actionsPool[i]);
+            actionsPool[i].SetAgent(agent);
         }
 
-        for (int i = 0; i < GoalPool.Count; i++)
-            GoalPool[i] = Instantiate<Goal>(GoalPool[i]);
+        for (int i = 0; i < goalPool.Count; i++)
+        {
+            goalPool[i] = Instantiate<Goal>(goalPool[i]);
+        }
     }
 
-    public Queue<Node> ComputePlan(Node node, Goal currentGoal)
+    public Queue<Node> ComputePlan(Node root, Goal currentGoal)
     {
         List<Node> leaves = new List<Node>();
+        graphBuilder.BuildGraph(root, leaves, actionsPool, currentGoal.GoalWorldState); //Create every possible plan that will complete the goal
 
-        stopwatch.Reset();
-        stopwatch.Start();
-        if(bDoBackwardResearch)
-        {
-            Node goalNode = new Node(null, currentGoal.GoalWorldState, null);
-            graphBuilder.BuildGraphBackward(goalNode, leaves, ActionsPool, node.State);
-        }
-        else
-        {
-            graphBuilder.BuildGraph(node, leaves, ActionsPool, currentGoal.GoalWorldState);
-        }
-        stopwatch.Stop();
-
-        Queue<Node> plan = graphBuilder.CreatePlan(leaves, bDoBackwardResearch);
+        Queue<Node> plan = graphBuilder.CreatePlan(leaves); //Choose and create the best plan (the ones with the cheapest cost)
 
         ShowDebug(leaves, plan);
 
@@ -68,12 +57,13 @@ public class GOAPPlanner : MonoBehaviour
         Goal bestGoal = null;
         float bestPriority = 0;
 
-        foreach(Goal goal in GoalPool)
+        foreach (Goal goal in goalPool)
         {
-            if (!bestGoal || goal.GetPriority(agent) > bestPriority)
+            float goalPriority = goal.GetPriority(agent);
+            if (!bestGoal || goalPriority > bestPriority)
             {
                 bestGoal = goal;
-                bestPriority = bestGoal.GetPriority(agent);
+                bestPriority = goalPriority;
             }
         }
 
@@ -83,8 +73,6 @@ public class GOAPPlanner : MonoBehaviour
     #region Debug
     private void ShowDebug(List<Node> leaves, Queue<Node> plan)
     {
-        if (bShowDebugTimerCreatePlan)
-            UnityEngine.Debug.Log("Time to create the plan : " + stopwatch.Elapsed.TotalMilliseconds / 1000f + " seconds");
         if (leaves.Count > 0 && bShowDebugLeaves)
             DebugConsoleLeaves(leaves);
         if (plan != null && bShowDebugPlan)
@@ -97,7 +85,7 @@ public class GOAPPlanner : MonoBehaviour
         {
             List<Node> leaveList = new List<Node>();
             leaveList.Add(leave);
-            Queue<Node> plan = graphBuilder.CreatePlan(leaveList, bDoBackwardResearch);
+            Queue<Node> plan = graphBuilder.CreatePlan(leaveList);
             string planString = "";
             foreach (Node action in plan)
             {

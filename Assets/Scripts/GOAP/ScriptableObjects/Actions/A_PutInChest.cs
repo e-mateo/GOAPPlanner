@@ -6,11 +6,11 @@ public class A_PutInChest : Action
 {
     public override bool ProceduralPrecondition()
     {
-        if (!IsRunning)
+        if (!IsRunning) //During Planning
         {
-            if (World.Instance.Chests.Count > 0) //During Planning
+            if (World.Instance.Chests.Count > 0) //Check if a chest is available
             {
-                Target = World.Instance.Chests[0].gameObject;
+                Target = World.Instance.Chests[Random.Range(0, World.Instance.Chests.Count)].gameObject;
                 return true;
             }
         }

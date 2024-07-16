@@ -26,7 +26,7 @@ public class World : MonoBehaviour
 
         foreach (Agent agent in Agents)
         {
-            agent.GetWorldState().D_WorldState[StateType.IRONREADY] = IronReady;
+            agent.GetWorldState().UpdateValue(StateType.IRONREADY, IronReady);
         }
     }
 

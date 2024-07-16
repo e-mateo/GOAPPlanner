@@ -1,6 +1,3 @@
-using System.Collections.Generic;
-using System.Threading;
-using TMPro;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -15,8 +12,8 @@ public struct Inventory
 [RequireComponent(typeof(NavMeshAgent))]
 public class Agent : MonoBehaviour
 {
-    protected NavMeshAgent _navMeshAgent;
-    public NavMeshAgent NavMeshAgent { get { return _navMeshAgent; } }
+    protected NavMeshAgent navMeshAgent;
+    public NavMeshAgent NavMeshAgent { get { return navMeshAgent; } }
 
     private GameObject currentTarget = null;
     public GameObject CurrentTarget { get { return currentTarget; } set { currentTarget = value; } }
@@ -29,7 +26,7 @@ public class Agent : MonoBehaviour
 
     protected virtual void Awake()
     {
-        _navMeshAgent = GetComponent<NavMeshAgent>();
+        navMeshAgent = GetComponent<NavMeshAgent>();
     }
 
     protected void Start()
